@@ -6,31 +6,39 @@
   <title>Receive Persona</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #050505; color: #fafafa; font-family: 'Outfit', sans-serif; }
+    body { 
+      background-color: #020617; 
+      color: #f8fafc; 
+      font-family: 'Outfit', sans-serif; 
+      background-image: linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-6 bg-[#050505] relative overflow-hidden">
-  <!-- Atmospheric Background -->
+<body class="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
   <div class="fixed inset-0 pointer-events-none z-0">
-    <div class="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-indigo-500/10 blur-[100px] rounded-full"></div>
+    <div class="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-cyan-500/10 blur-[100px] rounded-full"></div>
     <div class="absolute bottom-[-20%] right-[-10%] w-[80%] h-[80%] bg-purple-500/10 blur-[100px] rounded-full"></div>
   </div>
 
   <div class="relative z-10 flex flex-col items-center w-full max-w-md space-y-8 text-center">
     <div class="space-y-2">
-      <h1 class="text-4xl font-light tracking-tight">Incoming Transfer</h1>
-      <p id="status" class="text-zinc-400 font-light animate-pulse">Establishing secure P2P connection...</p>
+      <h1 class="text-4xl font-light tracking-tight text-cyan-50">Incoming Data</h1>
+      <p id="status" class="text-cyan-400 font-mono text-sm tracking-widest animate-pulse">ESTABLISHING SECURE P2P LINK...</p>
     </div>
 
-    <div id="image-container" class="hidden w-full aspect-[4/5] bg-white/5 border border-white/10 rounded-3xl p-2 shadow-2xl">
-      <img id="received-image" class="w-full h-full object-cover rounded-2xl" />
+    <div id="image-container" class="hidden w-full aspect-[4/5] bg-slate-900/50 border border-cyan-500/30 rounded-3xl p-2 shadow-[0_0_30px_rgba(34,211,238,0.1)] relative">
+      <div class="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-cyan-500/50 rounded-tl-lg z-20"></div>
+      <div class="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-cyan-500/50 rounded-br-lg z-20"></div>
+      <img id="received-image" class="w-full h-full object-cover rounded-2xl relative z-10" />
     </div>
 
-    <a id="download-btn" class="hidden w-full py-4 px-8 bg-white text-black rounded-full font-medium text-lg items-center justify-center space-x-2 transition-transform active:scale-95" download="style-persona.png">
+    <a id="download-btn" class="hidden w-full py-4 px-8 bg-cyan-500/10 border border-cyan-400 hover:bg-cyan-400 hover:text-slate-950 text-cyan-400 rounded-full font-medium text-lg items-center justify-center space-x-2 transition-all active:scale-95" download="persona-core.png">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-      <span>Save to Camera Roll</span>
+      <span>Save to Device</span>
     </a>
   </div>
 
@@ -43,18 +51,18 @@
     const downloadBtn = document.getElementById('download-btn');
 
     if (!hostId) {
-      statusEl.innerText = "Invalid link. Please scan the QR code again.";
-      statusEl.classList.remove('animate-pulse');
+      statusEl.innerText = "INVALID LINK. PLEASE SCAN QR CODE.";
+      statusEl.classList.remove('animate-pulse', 'text-cyan-400');
       statusEl.classList.add('text-red-400');
     } else {
       const peer = new Peer();
       
       peer.on('open', (id) => {
-        statusEl.innerText = "Connected to network. Requesting image...";
+        statusEl.innerText = "CONNECTED. REQUESTING DATA...";
         const conn = peer.connect(hostId, { reliable: true });
         
         conn.on('open', () => {
-          statusEl.innerText = "Downloading your persona...";
+          statusEl.innerText = "DOWNLOADING HOLOGRAPHIC DATA...";
           conn.send('ready');
         });
 
@@ -67,22 +75,22 @@
             downloadBtn.classList.remove('hidden');
             downloadBtn.classList.add('flex');
             
-            statusEl.innerText = "Transfer complete!";
+            statusEl.innerText = "TRANSFER COMPLETE";
             statusEl.classList.remove('animate-pulse');
             statusEl.classList.add('text-emerald-400');
           }
         });
 
         conn.on('error', (err) => {
-          statusEl.innerText = "Connection error: " + err.message;
-          statusEl.classList.remove('animate-pulse');
+          statusEl.innerText = "CONNECTION ERROR: " + err.message;
+          statusEl.classList.remove('animate-pulse', 'text-cyan-400');
           statusEl.classList.add('text-red-400');
         });
       });
       
       peer.on('error', (err) => {
-        statusEl.innerText = "PeerJS error: " + err.message;
-        statusEl.classList.remove('animate-pulse');
+        statusEl.innerText = "NETWORK ERROR: " + err.message;
+        statusEl.classList.remove('animate-pulse', 'text-cyan-400');
         statusEl.classList.add('text-red-400');
       });
     }
