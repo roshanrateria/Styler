@@ -67,17 +67,40 @@
         });
 
         conn.on('data', (data) => {
-          if (typeof data === 'string' && data.startsWith('data:image')) {
-            imgEl.src = data;
-            downloadBtn.href = data;
-            
-            imgContainer.classList.remove('hidden');
-            downloadBtn.classList.remove('hidden');
-            downloadBtn.classList.add('flex');
-            
-            statusEl.innerText = "TRANSFER COMPLETE";
-            statusEl.classList.remove('animate-pulse');
-            statusEl.classList.add('text-emerald-400');
+          if (typeof data === 'string') {
+            if (data.startsWith('data:image')) {
+              imgEl.src = data;
+              downloadBtn.href = data;
+              downloadBtn.download = "persona-core.png";
+              
+              imgContainer.classList.remove('hidden');
+              downloadBtn.classList.remove('hidden');
+              downloadBtn.classList.add('flex');
+              
+              statusEl.innerText = "TRANSFER COMPLETE";
+              statusEl.classList.remove('animate-pulse', 'text-cyan-400');
+              statusEl.classList.add('text-emerald-400');
+            } else if (data.startsWith('data:video')) {
+              // Replace image with video element
+              const videoEl = document.createElement('video');
+              videoEl.src = data;
+              videoEl.controls = true;
+              videoEl.autoplay = true;
+              videoEl.loop = true;
+              videoEl.className = "w-full h-full object-cover rounded-2xl relative z-10";
+              
+              imgEl.replaceWith(videoEl);
+              downloadBtn.href = data;
+              downloadBtn.download = "innovacion-sketch-timelapse.webm";
+              
+              imgContainer.classList.remove('hidden');
+              downloadBtn.classList.remove('hidden');
+              downloadBtn.classList.add('flex');
+              
+              statusEl.innerText = "VIDEO TRANSFER COMPLETE";
+              statusEl.classList.remove('animate-pulse', 'text-cyan-400');
+              statusEl.classList.add('text-emerald-400');
+            }
           }
         });
 
